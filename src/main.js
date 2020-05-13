@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import Home from './Home.vue'
+import Petitions from "./Petitions";
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
@@ -11,7 +12,13 @@ Vue.use(VueAxios, axios);
 const routes = [
   {
     path: "/",
+    name: 'Home',
     component: Home
+  },
+  {
+    path: "/petitions",
+    name: "Petitions",
+    component: Petitions
   }
 ]
 
