@@ -9,6 +9,18 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
 
+Vue.mixin({
+  data: {
+    auth_token: null,
+    error: null,
+    error_flag: false,
+  },
+  methods:
+    {
+
+    }
+});
+
 const routes = [
   {
     path: "/",

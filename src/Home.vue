@@ -15,8 +15,7 @@
             <router-link class="nav-link" :to="{name:'Home'}">Profile</router-link>
           </li>
         </ul>
-    <button type="button" class="btn btn-outline-light ml-md-auto" data-toggle="modal"
-            data-target="#loginModal">Log In</button>
+    <router-link tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Home'}"> Log In</router-link>
   </nav>
   <div class="jumbotron text-center" style="height:90vh;">
       <div class="container">
@@ -27,44 +26,11 @@
         </router-link>
       </div>
       </div>
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Log In</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <input type="text" class="form-control" id="loginEmail" placeholder="Email Address" required>
-            </div>
-            <div class="form-group">
-              <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
-              <div class="invalid-feedback">
-                Invalid Email or Password
-              </div>
-            </div>
-            <button class="btn btn-dark" type="submit" v-on:click="logIn()">Log In</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
 
 <script>
     export default {
-        name: "Home",
-      methods:{
-          logIn: function () {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            this.$http.get("localhost:")
-          }
-      }
+        name: "Home"
     }
 </script>
