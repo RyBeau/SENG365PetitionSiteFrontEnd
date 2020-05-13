@@ -15,7 +15,7 @@
             <router-link class="nav-link" :to="{name:'Home'}">Profile</router-link>
           </li>
         </ul>
-    <router-link tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Home'}"> Log In</router-link>
+    <router-link tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
   </nav>
   <div class="jumbotron text-center" style="height:90vh;">
       <div class="container">

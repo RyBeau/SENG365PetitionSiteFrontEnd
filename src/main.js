@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import Home from './Home.vue'
-import Petitions from "./Petitions";
+import Login from './Login.vue'
+import Petitions from "./Petitions"
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
@@ -10,10 +11,14 @@ import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
 
 Vue.mixin({
-  data: {
-    auth_token: null,
-    error: null,
-    error_flag: false,
+  data() {
+    return{
+      route_prefix: "http://localhost:4941/api/v1/",
+      user_id: null,
+      auth_token: null,
+      error: null,
+      error_flag: false
+    }
   },
   methods:
     {
@@ -31,6 +36,11 @@ const routes = [
     path: "/petitions",
     name: "Petitions",
     component: Petitions
+  },
+  {
+    path:"/login",
+    name:"Login",
+    component: Login
   }
 ]
 
