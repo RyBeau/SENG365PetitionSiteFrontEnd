@@ -12,7 +12,8 @@
             <router-link class="nav-link" :to="{name:'Petitions'}">Petitions</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{name:'Home'}">Profile</router-link>
+            <router-link v-if="this.getAuth()===''" class="nav-link disabled" :to="{name:'Home'}">Profile</router-link>
+            <router-link v-else class="nav-link" :to="{name:'Home'}">Profile</router-link>
           </li>
         </ul>
     <router-link tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
@@ -33,10 +34,32 @@
           <label for="loginPassword">Password:</label>
           <input type="password" class="form-control text-center" id="loginPassword" placeholder="Password" required>
           </div>
+          <div class="form-group">
+            <label>Don't have an account? <a href="#exampleModal" data-toggle="modal" data-target="#exampleModal">Register Here</a></label>
+          </div>
           <button class="btn btn-dark" type="submit">Log In</button>
         </form>
         </div>
       </div>
+  </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Register info
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-dark">Save changes</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -45,6 +68,8 @@
     export default {
       data () {
         return{
+          error: "",
+          error_flag: false,
           invalidInfo: false
         }
       },
@@ -55,11 +80,9 @@
             const password = document.getElementById("loginPassword").value;
             this.$http.post(this.route_prefix + "users/login", {"email": email,"password":password})
               .then((response) => {
-                console.log(response);
                 if (response.status === 200) {
-                  this.auth_token = response.data.token;
-                  this.user_id = response.data.userId;
-                  this.$router.push("/");
+                  this.logUserIn(response.data.token, response.data.userId);
+                  this.$router.go(-1);
                 }
             }).catch((error) => {
               if (error.response.status === 400) {

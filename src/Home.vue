@@ -12,10 +12,12 @@
             <router-link class="nav-link" :to="{name:'Petitions'}">Petitions</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{name:'Home'}">Profile</router-link>
+            <router-link v-if="this.getAuth()===''" class="nav-link disabled" :to="{name:'Home'}">Profile</router-link>
+            <router-link v-else class="nav-link" :to="{name:'Home'}">Profile</router-link>
           </li>
         </ul>
-    <router-link tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
+    <router-link v-if='this.getAuth()===""' tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
+    <button v-else class="btn btn-outline-light ml-md-auto" v-on:click="this.logOut">Log Out</button>
   </nav>
   <div class="jumbotron text-center" style="height:90vh;">
       <div class="container">
