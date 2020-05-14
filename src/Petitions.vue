@@ -30,6 +30,6 @@
 
 <script>
     export default {
-        name: "Home"
+        name: "Petitions"
     }
 </script>
