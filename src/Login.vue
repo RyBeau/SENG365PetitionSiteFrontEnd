@@ -35,23 +35,23 @@
           <input type="password" class="form-control text-center" id="loginPassword" placeholder="Password" required>
           </div>
           <div class="form-group">
-            <label>Don't have an account? <a href="#exampleModal" data-toggle="modal" data-target="#exampleModal">Register Here</a></label>
+            <label>Don't have an account? <a href="#registerModal" data-toggle="modal" data-target="#registerModal">Register Here</a></label>
           </div>
           <button class="btn btn-dark" type="submit">Log In</button>
         </form>
         </div>
       </div>
   </div>
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Register</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title">Register</h5>
+          <button type="button" id="registerModalClose" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" >
           <div v-show="registerError!==''" class="alert alert-danger fade-in" role="alert" :key="registerError">{{this.registerError}}</div>
           <form v-on:submit.prevent="register()">
             <div class="form-group row">
@@ -117,7 +117,6 @@
                 if (this.image !== ""){
                   this.uploadImage();
                 }
-                this.$forceUpdate();
                 this.$router.go(-1);
               }
             }).catch((error) => {
@@ -148,35 +147,6 @@
           }
           return data
         },
-        handleImage: function (event){
-          const uploadedImage = event.target.files[0];
-          this.image_type = uploadedImage['type'];
-          this.createRawImage(uploadedImage);
-        },
-        createRawImage: function (uploadedImage){
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            this.image = event.target.result;
-            console.log("loaded")
-          };
-          reader.readAsArrayBuffer(uploadedImage);
-        },
-      uploadImage : function(){
-              this.$http.put(this.route_prefix + "users/" + this.getUserId() + "/photo", this.image, {
-                headers: {
-                  "Content-Type": this.image_type,
-                  "X-Authorization": this.getAuth()
-                }
-              })
-                .then((response) => {
-                  this.image = "";
-                  this.image_type = "";
-                }).catch((error) => {
-                  this.error_flag = true;
-                  this.error = error.statusText;
-                }
-              );
-      },
         register: function () {
           const name = document.getElementById("registerName").value;
           const email = document.getElementById("registerEmail").value;
@@ -194,6 +164,7 @@
           if (data !== -1){
             this.$http.post(this.route_prefix + "users/register", data)
               .then((response) => {
+                $('.modal-backdrop').remove();
                 if(response.status===201){
                   this.logOnSend(email, password);
                 } else {

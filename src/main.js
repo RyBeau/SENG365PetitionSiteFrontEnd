@@ -76,7 +76,36 @@ Vue.mixin({
       },
       getUserId: function () {
         return store.state.userId;
-      }
+      },
+      handleImage: function (event){
+        const uploadedImage = event.target.files[0];
+        this.image_type = uploadedImage['type'];
+        this.createRawImage(uploadedImage);
+      },
+      createRawImage: function (uploadedImage){
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.image = event.target.result;
+          console.log("loaded")
+        };
+        reader.readAsArrayBuffer(uploadedImage);
+      },
+      uploadImage : function(){
+        this.$http.put(this.route_prefix + "users/" + this.getUserId() + "/photo", this.image, {
+          headers: {
+            "Content-Type": this.image_type,
+            "X-Authorization": this.getAuth()
+          }
+        })
+          .then((response) => {
+            this.image = "";
+            this.image_type = "";
+          }).catch((error) => {
+            this.error_flag = true;
+            this.error = error.statusText;
+          }
+        );
+      },
     }
 });
 
