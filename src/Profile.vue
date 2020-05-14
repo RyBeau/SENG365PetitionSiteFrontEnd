@@ -21,15 +21,95 @@
   </nav>
   <div class="jumbotron text-center">
       <div class="container">
-        <h1 class="display-4">Petitions</h1>
-        <p class="lead">Browse our countless petitions for great causes below.</p>
+        <h1 class="display-4">Your Profile</h1>
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Profile Information</h4>
+          </div>
+          <div class="row no-gutters">
+            <div class="col-md-3">
+              <img v-bind:src="profile_picture" class="card-img" alt="Profile Picture">
+            </div>
+            <div class="col-md-9">
+              <div class="card-body text-left">
+                <h5>Name: {{name}}</h5>
+                <h5>Email Address: {{email}}</h5>
+                <h5>City: {{city}}</h5>
+                <h5>Country: {{country}}</h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-dark">Update Information</button>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
+
+   </div>
+</div>
 </template>
 
 <script>
     export default {
-        name: "Profile"
+        name: "Profile",
+      data(){
+        return {
+          name: "",
+          email: "",
+          city: "None Given",
+          country: "None Given",
+          profile_picture: "https://i.imgur.com/XdhaLFP.png",
+          error_flag: false,
+          error:""
+        }
+      },
+      mounted(){
+        this.getProfileInformation();
+        this.getProfilePicture();
+      },
+        methods:{
+          getProfileInformation: function() {
+            this.$http.get(this.route_prefix + "users/" + this.getUserId(), {headers: {
+                "X-Authorization": this.getAuth()
+              }}).then((response) => {
+              this.name = response.data.name;
+              this.email = response.data.email;
+              if (response.data.city !== null){
+                this.city = response.data.city;
+              }
+              if(response.data.country !== null){
+                this.country = response.data.country;
+              }
+              this.$forceUpdate();
+            }).catch((error) => {
+            });
+          },
+          getProfilePicture: function(){
+              this.$http.get(this.route_prefix + "users/" + this.getUserId() + "/photo")
+            .then((response) => {
+              //this.profile_picture = 'data:image/;base64,' + btoa(response.data.toString());
+              let file = new File([response.data], "profile_picture", {type:'image/jpeg'});
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => {
+                this.profile_picture = reader.result;
+                console.log(this.profile_picture);
+              };
+              this.$forceUpdate();
+            }).catch((error) => {
+              if(error.response){
+                if (error.response.status !== 404){
+                  this.error_flag = true;
+                  this.error = error.response.statusText;
+                }
+              } else {
+                console.log(error);
+                this.error_flag = true;
+                this.error = error;
+              }
+
+            });
+          }
+        }
     }
 </script>
