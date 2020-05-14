@@ -20,6 +20,12 @@
     <button v-else class="btn btn-outline-light ml-md-auto" v-on:click="this.logOut">Log Out</button>
   </nav>
   <div class="jumbotron text-center">
+    <div v-show="error_flag" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{error}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
       <div class="container">
         <h1 class="display-4">Your Profile</h1>
         <div class="card">
@@ -82,20 +88,14 @@
               }
               this.$forceUpdate();
             }).catch((error) => {
+              this.error_flag = true;
+              this.error = error.response.statusText;
             });
           },
           getProfilePicture: function(){
               this.$http.get(this.route_prefix + "users/" + this.getUserId() + "/photo")
             .then((response) => {
-              //this.profile_picture = 'data:image/;base64,' + btoa(response.data.toString());
-              let file = new File([response.data], "profile_picture", {type:'image/jpeg'});
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onload = () => {
-                this.profile_picture = reader.result;
-                console.log(this.profile_picture);
-              };
-              this.$forceUpdate();
+              this.profile_picture = this.route_prefix + "users/" + this.getUserId() + "/photo";
             }).catch((error) => {
               if(error.response){
                 if (error.response.status !== 404){
