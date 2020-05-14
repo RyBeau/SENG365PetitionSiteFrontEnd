@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import Home from './Home.vue'
 import Login from './Login.vue'
-import Petitions from "./Petitions"
+import Petitions from "./Petitions.vue"
+import Profile from "./Profile.vue";
 import VueRouter from 'vue-router'
 import Vuex from "vuex";
 Vue.use(VueRouter, Vuex);
@@ -28,6 +29,11 @@ const routes = [
     path:"/login",
     name:"Login",
     component: Login
+  },
+  {
+    path:'/profile',
+    name:"Profile",
+    component: Profile
   }
 ];
 
@@ -65,6 +71,7 @@ Vue.mixin({
         this.$http.post(host + "users/logout",{},{headers: {"X-Authorization": localStorage.auth_token}});
         localStorage.removeItem('auth_token');
         localStorage.removeItem('userId');
+        this.$router.push('/');
         this.$forceUpdate();
       },
       logUserIn: function (token, id) {
