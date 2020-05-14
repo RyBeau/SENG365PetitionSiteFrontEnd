@@ -11,7 +11,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
 
-
+const host = "http://localhost:4941/api/v1/";
 
 const routes = [
   {
@@ -55,16 +55,17 @@ const router = new VueRouter({
 Vue.mixin({
   data() {
     return {
-      route_prefix: "http://localhost:4941/api/v1/"
+      route_prefix: host
     }
   },
   methods:
     {
       logOut: function(){
         store.loggedOut();
-        this.$forceUpdate();
+        this.$http.post(host + "users/logout",{},{headers: {"X-Authorization": localStorage.auth_token}});
         localStorage.removeItem('auth_token');
         localStorage.removeItem('userId');
+        this.$forceUpdate();
       },
       logUserIn: function (token, id) {
         store.loggedUserIn(token, id);
