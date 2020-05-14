@@ -20,6 +20,12 @@
     <button v-else class="btn btn-outline-light ml-md-auto" v-on:click="this.logOut">Log Out</button>
   </nav>
   <div class="jumbotron text-center">
+    <div v-show="error_flag" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{error}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
       <div class="container">
         <h1 class="display-4">Petitions</h1>
         <p class="lead">Browse our countless petitions for great causes below.</p>
@@ -30,6 +36,12 @@
 
 <script>
     export default {
-        name: "Petitions"
+        name: "Petitions",
+        data(){
+            return{
+              error:"",
+              error_flag:false
+            }
+        }
     }
 </script>
