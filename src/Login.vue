@@ -23,8 +23,8 @@
       <div class="card border-secondary mx-auto" style="width: 30rem;">
         <div class="card-header display-4">Log In</div>
         <div class="card-body">
-          <div v-show="invalidInfo" class="alert alert-danger fade-in" role="alert" :key="invalidInfo">Invalid Email Address or Password</div>
-          <div v-show="this.error_flag" class="alert alert-warning fade-in" role="alert" :key="this.error_flag">{{this.error}}</div>
+          <div v-show="invalidInfo" class="alert alert-danger fade-in" role="alert" :key="invalidInfo + 'info'">Invalid Email Address or Password</div>
+          <div v-show="error_flag" class="alert alert-warning fade-in" role="alert" :key="error_flag + 'error'">{{error}}</div>
         <form v-on:submit.prevent="logOn()">
           <div class="form-group">
             <label for="loginEmail">Email Address:</label>
