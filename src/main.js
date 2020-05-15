@@ -94,12 +94,11 @@ Vue.mixin({
         const reader = new FileReader();
         reader.onload = (event) => {
           this.image = event.target.result;
-          console.log("loaded")
         };
         reader.readAsArrayBuffer(uploadedImage);
       },
       uploadImage : function(){
-        this.$http.put(this.route_prefix + "users/" + this.getUserId() + "/photo", this.image, {
+        return this.$http.put(host + "users/" + this.getUserId() + "/photo", this.image, {
           headers: {
             "Content-Type": this.image_type,
             "X-Authorization": this.getAuth()
@@ -108,9 +107,9 @@ Vue.mixin({
           .then((response) => {
             this.image = "";
             this.image_type = "";
+            return 0;
           }).catch((error) => {
-            this.error_flag = true;
-            this.error = error.statusText;
+            return -1;
           }
         );
       },
