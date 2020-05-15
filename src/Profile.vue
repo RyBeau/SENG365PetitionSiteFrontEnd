@@ -62,12 +62,12 @@
           </button>
         </div>
         <div class="modal-body" >
-          <div v-show="updateSuccess!==''" class="alert alert-success alert-dismissible fade-in" role="alert" :key="updateSuccess">{{updateSuccess}}
+          <div v-show="updateSuccess!==''" class="alert alert-success alert-dismissible fade-in" role="alert" :key="updateSuccess + 'success'">{{updateSuccess}}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div v-show="updateError!==''" class="alert alert-danger fade-in" role="alert" :key="updateError">{{updateError}}</div>
+          <div v-show="updateError!==''" class="alert alert-danger fade-in" role="alert" :key="updateError + 'error'">{{updateError}}</div>
           <form v-on:submit.prevent="updateUserInfo">
             <div class="form-group">
               <label for="updateName">Name:</label>
