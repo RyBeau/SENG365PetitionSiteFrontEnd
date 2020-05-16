@@ -68,7 +68,7 @@
         <li v-else class="page-item disabled"><a class="page-link" href="#">First</a></li>
         <li v-if="current_page !== 1"  class="page-item"><a class="page-link" href="#" v-on:click.prevent="previous">&laquo;</a></li>
         <li v-else class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
-
+        <li class="page-item active"><a class="page-link" v-on:click.prevent>{{current_page}}</a></li>
         <li v-if="current_page !== num_pages" class="page-item"><a class="page-link" href="#" v-on:click.prevent="next">&raquo;</a></li>
         <li  v-else class="page-item disabled"><a class="page-link">&raquo;</a></li>
         <li v-if="current_page !== num_pages" class="page-item" ><a class="page-link" v-on:click.prevent="goToLast" href="#">Last</a></li>
