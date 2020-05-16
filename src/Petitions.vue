@@ -106,9 +106,15 @@
             }
           },
       mounted() {
+        this.checkParameters();
         this.getCategories();
       },
       methods: {
+          checkParameters: function (){
+            if(this.search === undefined){this.search = ""}
+            if(this.category === undefined){this.category = ""}
+            if(this.sort === undefined){this.sort = this.sort_types[0].name}
+          },
           getCategories: function(){
             this.$http.get(this.route_prefix + "petitions/categories")
             .then((response) => {
