@@ -30,19 +30,19 @@
         <h1 class="display-4">Petitions</h1>
         <p class="lead">Browse our countless petitions for great causes below.</p>
       </div>
-    <form v-on:submit.prevent="getPetitions" class="form-inline">
+    <form v-on:submit="createURL(1)" class="form-inline">
       <div class="form-row mx-auto">
         <label for="petitionFilterSort" class="mb-2 mr-sm-2">Sort By:</label>
-        <select class="form-control mb-2 mr-sm-2" id="petitionFilterSort">
+        <select class="form-control mb-2 mr-sm-2" id="petitionFilterSort" v-model="sort">
           <option v-for="sort in sort_types">{{sort.name}}</option>
         </select>
         <label for="petitionFilterCategory" class="mb-2 mr-sm-2">Category:</label>
-        <select class="form-control mb-2 mr-sm-2" id="petitionFilterCategory">
+        <select class="form-control mb-2 mr-sm-2" id="petitionFilterCategory" v-model="category">
           <option></option>
           <option v-for="category in this.categories">{{category.name}}</option>
         </select>
         <label for="petitionFilterSearch" class="mb-2 mr-sm-2">Search:</label>
-        <input class="form-control mb-2 mr-sm-2" type="text" id="petitionFilterSearch">
+        <input class="form-control mb-2 mr-sm-2" type="text" id="petitionFilterSearch" v-model="search">
         <button type="submit" class="btn btn-dark mb-2 mr-sm-2">Apply</button>
       </div>
     </form>
@@ -64,14 +64,14 @@
     </div>
     <nav aria-label="Page Navigation">
       <ul class="pagination justify-content-center">
-        <li v-if="current_page !== 1" class="page-item"><a class="page-link" href="#" v-on:click.prevent="goToFirst">First</a></li>
+        <li v-if="current_page !== 1" class="page-item"><a class="page-link" :href="goToFirst()">First</a></li>
         <li v-else class="page-item disabled"><a class="page-link" href="#">First</a></li>
-        <li v-if="current_page !== 1"  class="page-item"><a class="page-link" href="#" v-on:click.prevent="previous">&laquo;</a></li>
+        <li v-if="current_page !== 1"  class="page-item"><a class="page-link" :href="previous()">&laquo;</a></li>
         <li v-else class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
         <li class="page-item active"><a class="page-link" v-on:click.prevent>{{current_page}}</a></li>
-        <li v-if="current_page !== num_pages" class="page-item"><a class="page-link" href="#" v-on:click.prevent="next">&raquo;</a></li>
+        <li v-if="current_page !== num_pages" class="page-item"><a class="page-link" :href="next()">&raquo;</a></li>
         <li  v-else class="page-item disabled"><a class="page-link">&raquo;</a></li>
-        <li v-if="current_page !== num_pages" class="page-item" ><a class="page-link" v-on:click.prevent="goToLast" href="#">Last</a></li>
+        <li v-if="current_page !== num_pages" class="page-item" ><a class="page-link" :href="goToLast()">Last</a></li>
         <li v-else class="page-item disabled"><a class="page-link">Last</a></li>
       </ul>
     </nav>
@@ -96,6 +96,9 @@
               number_petitions: 0,
               num_pages: 0,
               current_page: 1,
+              search: this.$route.query.search,
+              category: this.$route.query.category,
+              sort: this.$route.query.sort,
               sort_types: [{name:"Most to Least", query:"SIGNATURES_DESC"},
                 {name:"Least to Most", query: "SIGNATURES_ASC"},
                 {name:"A-Z", query: "ALPHABETICAL_ASC"},
@@ -103,14 +106,14 @@
             }
           },
       mounted() {
-          this.getPetitions();
-          this.getCategories();
+        this.getCategories();
       },
       methods: {
           getCategories: function(){
             this.$http.get(this.route_prefix + "petitions/categories")
             .then((response) => {
               this.categories = response.data;
+              this.getPetitions();
             }).catch((error) => {
               this.error = "Unable to retrieve petition categories";
               this.error_flag = true;
@@ -122,6 +125,7 @@
         getCategoryId : function (name){
           for (let i = 0; i < this.categories.length; i++){
             if(this.categories[i].name === name){
+              console.log(this.categories[i]);
               return this.categories[i].categoryId;
             }
           }
@@ -134,20 +138,28 @@
           }
         },
         getPetitionParameters: function(){
-          const search = document.getElementById("petitionFilterSearch").value;
-          const category = document.getElementById("petitionFilterCategory").value;
-          const sort = document.getElementById("petitionFilterSort").value;
-          let params = "?";
-          search === "" ? params += "" : params += "q=" + search;
-          category === "" ? params += "" :
-            params === "?" ? params += "categoryId=" + this.getCategoryId(category): params += "&categoryId=" +
-              this.getCategoryId(category);
-          params === "?" ? params += "sortBy=" + this.getSortType(sort): params += "&sortBy=" +
-            this.getSortType(sort);
-          return params;
+          if (this.search || this.category || this.sort){
+            let params = "?";
+            this.search === undefined || this.search === ""? params += "" : params += "q=" + this.search;
+            if(this.category !== undefined){
+              const categoryId = this.getCategoryId(this.category);
+              if(categoryId !== undefined){
+                params === "?" ? params += "categoryId=" + categoryId : params += "&categoryId=" + categoryId;
+              }
+            }
+            if(this.sort !== undefined){
+              const sortType = this.getSortType(this.sort);
+              if(sortType !== undefined){
+                params === "?" ? params += "sortBy=" + sortType: params += "&sortBy=" + sortType;
+              }
+            }
+            return params;
+          }
+          return "";
         },
           getPetitions: function(){
             const query_params = this.getPetitionParameters();
+            console.log(query_params);
             this.$http.get(this.route_prefix + "petitions" + query_params)
             .then((response) => {
               this.petitions = response.data;
@@ -173,25 +185,26 @@
           this.stop = 10 * (this.current_page - 1) + 9;
           this.$forceUpdate();
         },
+        createURL : function (page) {
+          let url = "petitions?current_page=" + page;
+          this.search !== undefined && this.search !== "" ? url += "&search=" + this.search: url += "";
+          this.category !== undefined && this.category !== "" ? url +="&category=" + this.category : url += "";
+          this.sort !== undefined && this.sort !== "" ? url +="&sort=" + this.sort : url += "";
+          return url;
+        },
         next: function(){
-            this.current_page += 1;
-            this.$router.push("/petitions?current_page=" + this.current_page);
-            this.paginationConfig();
+          let page = this.current_page + 1;
+          return this.createURL(page);
         },
         previous: function(){
-          this.current_page -= 1;
-          this.$router.push("/petitions?current_page=" + this.current_page);
-          this.paginationConfig();
+          let page = this.current_page - 1;
+          return this.createURL(page);
         },
         goToFirst: function (){
-          this.current_page = 1;
-          this.$router.push("/petitions?current_page=" + this.current_page);
-          this.paginationConfig();
+          return this.createURL(1);
         },
         goToLast: function (){
-            this.current_page = this.num_pages;
-            this.$router.push("/petitions?current_page=" + this.current_page);
-          this.paginationConfig();
+            return this.createURL(this.num_pages);
         }
       }
     }
