@@ -28,7 +28,7 @@
     </div>
       <div class="container">
         <h1 class="display-4">Your Profile</h1>
-        <div class="card">
+        <div class="card mb-3">
           <div class="card-header">
             <h4 class="card-title">Profile Information</h4>
           </div>
@@ -49,8 +49,31 @@
             <button class="btn btn-dark" data-toggle="modal" data-target="#updateProfileModal">Update Information</button>
           </div>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Your Petitions</h4>
+          </div>
+          <div class="card-body">
+            <div v-for="petition in userPetitions" class="card mb-3 mx-auto text-left" style="max-width: 540px;">
+              <div class="row no-gutters">
+                <div class="col-md-4 text-center">
+                  <img :src="getPhotoUrl(petition.petitionId)" class="card-img" alt="No Image Available">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{petition.title}}</h5>
+                    <p class="card-text">Author: {{petition.authorName}}<br>
+                      Category: {{petition.category}}<br>
+                      Signatures: {{petition.signatureCount}}<br>
+                      <a :href="'/petitions/' + petition.petitionId" class="stretched-link">View Petition</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
    </div>
   <div class="modal fade" id="updateProfileModal" tabindex="-1" role="dialog" aria-labelledby="updateProfileModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -127,11 +150,13 @@
           updateSuccess:"",
           updateError: "",
           image:"",
+          userPetitions: {}
         }
       },
       mounted(){
         this.getProfileInformation();
         this.getProfilePicture();
+        this.getUserPetitions();
       },
         methods:{
           getProfileInformation: function() {
@@ -262,7 +287,19 @@
             } else {
               this.updateError="No changes made";
             }
-            }
+            },
+          getUserPetitions: function (){
+            this.$http.get(this.route_prefix + "petitions?authorId=" + this.getUserId())
+              .then((response) => {
+                this.userPetitions = response.data;
+              }).catch((error) => {
+                this.error_flag = true;
+                this.error = "Unable to get petitions for this user."
+            });
+          },
+          getPhotoUrl: function (petitionId){
+            return this.route_prefix + "petitions/" + petitionId + "/photo"
           }
+        }
     }
 </script>
