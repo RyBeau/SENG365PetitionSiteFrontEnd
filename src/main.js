@@ -4,6 +4,7 @@ import Home from './Home.vue'
 import Login from './Login.vue'
 import Petitions from "./Petitions.vue"
 import Profile from "./Profile.vue";
+import PetitionDetails from "./PetitionDetails.vue";
 import VueRouter from 'vue-router'
 import Vuex from "vuex";
 Vue.use(VueRouter, Vuex);
@@ -24,6 +25,12 @@ const routes = [
     path: "/petitions",
     name: "Petitions",
     component: Petitions
+  },
+  {
+    path: "/petitions/:id",
+    name: "PetitionDetails",
+    component: PetitionDetails,
+    props: true
   },
   {
     path:"/login",
