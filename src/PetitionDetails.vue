@@ -56,6 +56,38 @@
         </div>
         </div>
       </div>
+      <div class="accordion" id="signatures">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#signatureCollapse">
+                View Signatures
+              </button>
+            </h2>
+          </div>
+
+          <div id="signatureCollapse" class="collapse" data-parent="#signatures">
+            <div class="card-body">
+              <div v-for="signature in signatures" class="card text-left mb-2">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img :src="signature.photo" class="card-img" alt="Profile Picture">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <p class="card-text">
+                        {{signature.name}}<br>
+                        {{signature.city}}
+                        {{signature.country}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -74,6 +106,7 @@
       },
       mounted(){
         this.getPetition();
+        this.getSignatures();
       },
       methods:{
         getPetition: function () {
@@ -81,7 +114,7 @@
           this.$http.get(this.route_prefix + "petitions/" + petitionId)
           .then((response) => {
             this.petition = response.data;
-            this.getProfilePicture(this.petition.authorId);
+            this.authorProfilePic();
           }).catch((error) => {
             this.error = "Unable to get Petition with ID " + petitionId;
             this.error_flag = true;
@@ -97,11 +130,17 @@
         getPhotoUrl: function () {
           return this.route_prefix + "petitions/" + this.petition.petitionId + "/photo";
         },
+        authorProfilePic: function (){
+          this.getProfilePicture(this.petition.authorId)
+          .then((result) => {
+            this.petition.photo = result;
+            this.$forceUpdate();
+          })
+        },
         getProfilePicture: function (id){
-          this.$http.get(this.route_prefix + "users/" + id + "/photo")
+          return this.$http.get(this.route_prefix + "users/" + id + "/photo")
             .then((response) => {
-              this.petition.photo =  this.route_prefix + "users/" + id + "/photo"
-              this.$forceUpdate();
+              return this.route_prefix + "users/" + id + "/photo"
             }).catch((error) => {
             if(error.response) {
               if (error.response.status !== 404) {
@@ -109,9 +148,28 @@
                 this.error = "Unable to get User Profile Photos";
               }
             }
-            this.petition.photo = "https://i.imgur.com/XdhaLFP.png";
-            this.$forceUpdate();
+            return "https://i.imgur.com/XdhaLFP.png";
           });
+        },
+        getSignatures: function (){
+          const petitionId = this.$route.params.id;
+          this.$http.get(this.route_prefix + "petitions/" + petitionId + "/signatures")
+          .then((response) => {
+            this.signatures = response.data;
+            this.getSignatureProfilePics();
+          }).catch( (error) => {
+            this.error = "Unable to get petition signatures";
+            this.error_flag = true;
+          });
+        },
+        getSignatureProfilePics: function () {
+          for (let i = 0; i < this.signatures.length; i++){
+            this.getProfilePicture(this.signatures[i].signatoryId)
+            .then((result) => {
+              this.signatures[i].photo = result;
+              this.$forceUpdate();
+            });
+          }
         }
       }
     }
