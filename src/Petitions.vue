@@ -30,20 +30,20 @@
         <h1 class="display-4">Petitions</h1>
         <p class="lead">Browse our countless petitions for great causes below.</p>
       </div>
-    <form v-on:submit="createURL(1)" class="form-inline">
+    <form class="form-inline" v-on:submit.prevent="applyFilter">
       <div class="form-row mx-auto">
         <label for="petitionFilterSort" class="mb-2 mr-sm-2">Sort By:</label>
-        <select class="form-control mb-2 mr-sm-2" id="petitionFilterSort" v-model="sort">
+        <select class="form-control mb-2 mr-sm-2" id="petitionFilterSort" :value="sort">
           <option v-for="sort in sort_types">{{sort.name}}</option>
         </select>
         <label for="petitionFilterCategory" class="mb-2 mr-sm-2">Category:</label>
-        <select class="form-control mb-2 mr-sm-2" id="petitionFilterCategory" v-model="category">
+        <select class="form-control mb-2 mr-sm-2" id="petitionFilterCategory" :value="category">
           <option></option>
           <option v-for="category in this.categories">{{category.name}}</option>
         </select>
         <label for="petitionFilterSearch" class="mb-2 mr-sm-2">Search:</label>
-        <input class="form-control mb-2 mr-sm-2" type="text" id="petitionFilterSearch" v-model="search">
-        <button type="submit" class="btn btn-dark mb-2 mr-sm-2">Apply</button>
+        <input class="form-control mb-2 mr-sm-2" type="text" id="petitionFilterSearch" :value="search">
+        <input type="submit" class="btn btn-dark mb-2 mr-sm-2" value="Apply" :onclick="createURL(1)">
       </div>
     </form>
     <div v-for="(petition, index) in petitions" v-if="index >= start && index <= stop" class="card mb-3 mx-auto text-left" style="max-width: 540px;">
@@ -178,6 +178,7 @@
           },
           paginationConfig: function () {
             this.num_pages = Math.ceil(this.number_petitions / 10);
+            if(this.num_pages === 0){this.num_pages = 1};
             this.current_page = Number(this.$route.query.current_page);
             if (!Number.isInteger(this.current_page) || this.current_page < 1){
               this.current_page = 1;
@@ -196,7 +197,14 @@
           this.search !== undefined && this.search !== "" ? url += "&search=" + this.search: url += "";
           this.category !== undefined && this.category !== "" ? url +="&category=" + this.category : url += "";
           this.sort !== undefined && this.sort !== "" ? url +="&sort=" + this.sort : url += "";
+          console.log(url);
           return url;
+        },
+        applyFilter: function () {
+          this.sort = document.getElementById("petitionFilterSort").value;
+          this.search = document.getElementById("petitionFilterSearch").value;
+          this.category = document.getElementById("petitionFilterCategory").value;
+          window.location.href = this.createURL(1);
         },
         next: function(){
           let page = this.current_page + 1;
