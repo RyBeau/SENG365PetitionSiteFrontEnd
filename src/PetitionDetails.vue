@@ -38,6 +38,8 @@
             Created: {{getLocalDate(petition.createdDate)}}<br>
             Closing Date: {{getLocalDate(petition.closingDate)}}
           </p>
+            <button  v-if="canBeEdited()" class="btn btn-dark">Edit Petition</button>
+            <button  v-if="String(petition.authorId) === this.getUserId()" class="btn btn-danger" v-on:click="deletePetition">Delete Petition</button>
         </div>
         <div class="card-footer text-left">
           <div class="row no-gutters">
@@ -114,6 +116,7 @@
           this.$http.get(this.route_prefix + "petitions/" + petitionId)
           .then((response) => {
             this.petition = response.data;
+            this.$nextTick();
             this.authorProfilePic();
           }).catch((error) => {
             this.error = "Unable to get Petition with ID " + petitionId;
@@ -170,6 +173,17 @@
               this.$forceUpdate();
             });
           }
+        },
+        canBeEdited: function (){
+          return (String(this.petition.authorId) === this.getUserId() && new Date(this.petition.closingDate) > new Date());
+        },
+        deletePetition: function(){
+          this.$http.delete(this.route_prefix + "petitions/" + this.petition.petitionId, {headers: {
+            "X-Authorization": this.getAuth()
+            }})
+          .then((response) => {
+            this.$router.back();
+          })
         }
       }
     }
