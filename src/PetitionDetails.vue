@@ -26,14 +26,38 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-      <div class="container">
-        <h1 class="display-4">Welcome to the SENG365 Petitions Site</h1>
-        <p class="lead">Browse our countless petitions for great causes.</p>
-        <router-link class="btn btn-dark" :to="{name:'Petitions'}" tag="button">
-          Browse
-        </router-link>
+    <div class="container">
+      <h1 class="display-4">{{petition.title}}</h1>
+      <p class="lead">{{petition.signatureCount + " Signatures"}}</p>
+      <div class="card">
+        <img :src="getPhotoUrl(petition.authorId)" class="card-img-top" alt="No Petition Image">
+        <div class="card-body text-left">
+          <p class="card-text">
+            Category: {{petition.category}}<br><br>
+            {{petition.description}}<br><br>
+            Created: {{getLocalDate(petition.createdDate)}}<br>
+            Closing Date: {{getLocalDate(petition.closingDate)}}
+          </p>
+        </div>
+        <div class="card-footer text-left">
+          <div class="row no-gutters">
+            <div class="col-md-2">
+            <img :src="petition.photo" class="card-img" alt="Profile Picture">
+            </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <p class="card-text">
+              {{petition.authorName}}<br>
+              {{petition.authorCity}}
+              {{petition.authorCountry}}
+              </p>
+            </div>
+          </div>
+        </div>
+        </div>
       </div>
-      </div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -49,11 +73,45 @@
           }
       },
       mounted(){
-        this.getPetition()
+        this.getPetition();
       },
       methods:{
         getPetition: function () {
-          const petitionId =
+          const petitionId = this.$route.params.id;
+          this.$http.get(this.route_prefix + "petitions/" + petitionId)
+          .then((response) => {
+            this.petition = response.data;
+            this.getProfilePicture(this.petition.authorId);
+          }).catch((error) => {
+            this.error = "Unable to get Petition with ID " + petitionId;
+            this.error_flag = true;
+          });
+        },
+        getLocalDate: function (utcDate) {
+          if(utcDate){
+            return this.$moment.utc(utcDate).local().format("dddd, MMMM Do YYYY");
+          } else {
+            return "No Closing Date"
+          }
+        },
+        getPhotoUrl: function () {
+          return this.route_prefix + "petitions/" + this.petition.petitionId + "/photo";
+        },
+        getProfilePicture: function (id){
+          this.$http.get(this.route_prefix + "users/" + id + "/photo")
+            .then((response) => {
+              this.petition.photo =  this.route_prefix + "users/" + id + "/photo"
+              this.$forceUpdate();
+            }).catch((error) => {
+            if(error.response) {
+              if (error.response.status !== 404) {
+                this.error_flag = true;
+                this.error = "Unable to get User Profile Photos";
+              }
+            }
+            this.petition.photo = "https://i.imgur.com/XdhaLFP.png";
+            this.$forceUpdate();
+          });
         }
       }
     }

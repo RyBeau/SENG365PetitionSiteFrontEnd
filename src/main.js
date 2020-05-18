@@ -7,11 +7,15 @@ import Profile from "./Profile.vue";
 import PetitionDetails from "./PetitionDetails.vue";
 import VueRouter from 'vue-router'
 import Vuex from "vuex";
+
 Vue.use(VueRouter, Vuex);
 
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
+import Moment from "vue-moment";
+Vue.use(Moment);
+
 
 const host = "http://localhost:4941/api/v1/";
 
