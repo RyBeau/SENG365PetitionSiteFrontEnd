@@ -29,8 +29,7 @@ const routes = [
   {
     path: "/petitions/:id",
     name: "PetitionDetails",
-    component: PetitionDetails,
-    props: true
+    component: PetitionDetails
   },
   {
     path:"/login",
