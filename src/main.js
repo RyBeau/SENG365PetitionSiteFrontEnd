@@ -16,7 +16,6 @@ Vue.use(VueAxios, axios);
 import Moment from "vue-moment";
 Vue.use(Moment);
 
-
 const host = "http://localhost:4941/api/v1/";
 
 const routes = [
@@ -107,8 +106,8 @@ Vue.mixin({
         };
         reader.readAsArrayBuffer(uploadedImage);
       },
-      uploadImage : function(){
-        return this.$http.put(host + "users/" + this.getUserId() + "/photo", this.image, {
+      uploadImage : function(destination){
+        return this.$http.put(host + destination + "/" + this.getUserId() + "/photo", this.image, {
           headers: {
             "Content-Type": this.image_type,
             "X-Authorization": this.getAuth()
