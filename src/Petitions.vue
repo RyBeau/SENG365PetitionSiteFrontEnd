@@ -57,7 +57,7 @@
             <p class="card-text">Author: {{petition.authorName}}<br>
               Category: {{petition.category}}<br>
               Signatures: {{petition.signatureCount}}<br>
-              <a href="#" class="stretched-link">View Petition</a>
+              <a :href="'/petitions/' + petition.petitionId" class="stretched-link">View Petition</a>
             </p>
           </div>
         </div>
