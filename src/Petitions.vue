@@ -166,7 +166,6 @@
         },
           getPetitions: function(){
             const query_params = this.getPetitionParameters();
-            console.log(query_params);
             this.$http.get(this.route_prefix + "petitions" + query_params)
             .then((response) => {
               this.petitions = response.data;
@@ -198,7 +197,6 @@
           this.search !== undefined && this.search !== "" ? url += "&search=" + this.search: url += "";
           this.category !== undefined && this.category !== "" ? url +="&category=" + this.category : url += "";
           this.sort !== undefined && this.sort !== "" ? url +="&sort=" + this.sort : url += "";
-          console.log(url);
           return url;
         },
         applyFilter: function () {
