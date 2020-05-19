@@ -308,7 +308,7 @@
               if (image.length !== 0 && !(['image/png','image/jpeg','image/gif'].includes(image[0]['type']))){
                 this.updateError = "Invalid Image Format";
               } else {
-                this.uploadImage("petitions").then((response) => {
+                this.uploadImage("petitions", this.petition.petitionId).then((response) => {
                   this.updateSuccess = "Petition Updated";
                 }).catch((error) => {
                   this.updateError = "Error updating petition photo";

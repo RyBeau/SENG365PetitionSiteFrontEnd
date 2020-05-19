@@ -273,7 +273,7 @@
                 this.sendUpdate(data);
               }
               if (image.length !== 0){
-                this.uploadImage("users").then((success) => {
+                this.uploadImage("users", this.getUserId()).then((success) => {
                   if(success === 0) {
                     if (this.updateSuccess === ""){
                       this.updateSuccess = "Profile Picture Successfully";
