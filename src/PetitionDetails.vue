@@ -162,7 +162,7 @@
 
 <script>
     export default {
-        name: "Home",
+        name: "PetitionDetails",
       data(){
           return {
             error: "",
