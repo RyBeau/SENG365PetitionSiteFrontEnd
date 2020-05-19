@@ -26,6 +26,12 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+    <div v-show="signSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+      {{signSuccess}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <div class="container">
       <h1 class="display-4">{{petition.title}}</h1>
       <p class="lead">{{petition.signatureCount + " Signatures"}}</p>
@@ -38,8 +44,10 @@
             Created: {{getLocalDate(petition.createdDate)}}<br>
             Closing Date: {{getLocalDate(petition.closingDate)}}
           </p>
-            <button v-if="canBeEdited()" class="btn btn-dark" type="button" data-toggle="modal" data-target="#editModal">Edit Petition</button>
-            <button v-if="String(petition.authorId) === this.getUserId()" class="btn btn-danger"
+          <button v-if="canBeSigned()" class="btn btn-dark" type="button" v-on:click="addSignature">Sign this Petition</button>
+          <button v-if="canDeleteSignature()" class="btn btn-danger" type="button" v-on:click="deleteSignature">Remove Signature</button>
+          <button v-if="canBeEdited()" class="btn btn-dark" type="button" data-toggle="modal" data-target="#editModal">Edit Petition</button>
+          <button v-if="String(petition.authorId) === this.getUserId()" class="btn btn-danger"
                     type="button" data-toggle="modal" data-target="#deleteConfirm">Delete Petition</button>
         </div>
         <div class="card-footer text-left">
@@ -163,7 +171,8 @@
             signatures: {},
             categories: {},
             updateSuccess: "",
-            updateError:""
+            updateError:"",
+            signSuccess: ""
           }
       },
       mounted(){
@@ -238,7 +247,7 @@
           }
         },
         canBeEdited: function () {
-          return (String(this.petition.authorId) === this.getUserId() && new Date(this.petition.closingDate) > new Date());
+          return (String(this.petition.authorId) === this.getUserId() && !this.hasClosed());
         },
         deletePetition: function () {
           this.$http.delete(this.route_prefix + "petitions/" + this.petition.petitionId, {
@@ -287,7 +296,7 @@
                 "X-Authorization": this.getAuth()
               }})
               .then((response) => {
-                this.updateSuccess = "Petition Updated"
+                this.updateSuccess = "Petition Updated";
                 this.getPetition();
               }).catch((error) => {
                 this.updateError = "Unable to update petition"
@@ -305,6 +314,55 @@
               }
             }
           }
+        },
+        hasClosed : function () {
+          return this.$moment(this.petition.closingDate) < this.$moment() && this.petition.closingDate !== null;
+        },
+        isSignedBy : function (userId){
+          for(let i = 0; i < this.signatures.length; i++){
+            if(this.signatures[i].signatoryId === userId){
+              return true
+            }
+          }
+          return false;
+        },
+        canBeSigned: function () {
+          let userId = Number(this.getUserId());
+          return userId !== null && this.petition.authorId !== userId &&
+            !this.isSignedBy(userId) && !this.hasClosed();
+        },
+        canDeleteSignature: function (){
+          let userId = Number(this.getUserId());
+          return userId !== null && this.petition.authorId !== userId &&
+            this.isSignedBy(userId) && !this.hasClosed();
+        },
+        addSignature: function (){
+          this.$http.post(this.route_prefix + "petitions/" + this.petition.petitionId + "/signatures", {},{headers: {
+            "X-Authorization": this.getAuth()
+            }})
+          .then((response) => {
+            this.signSuccess = "Signature added to petition";
+            this.getPetition();
+            this.getSignatures();
+          }).catch((error) => {
+            this.error_flag = true;
+            this.error = "Unable to sign petition";
+            console.log(error);
+          });
+        },
+        deleteSignature: function () {
+          this.$http.delete(this.route_prefix + "petitions/" + this.petition.petitionId + "/signatures", {headers: {
+              "X-Authorization": this.getAuth()
+            }})
+            .then((response) => {
+              this.signSuccess = "Signature removed from petition";
+              this.getPetition();
+              this.getSignatures();
+            }).catch((error) => {
+            this.error_flag = true;
+            this.error = "Unable to remove signature from petition";
+            console.log(error);
+          });
         }
       }
     }
