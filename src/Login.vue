@@ -115,7 +115,7 @@
               if (response.status === 200) {
                 this.logUserIn(response.data.token, response.data.userId);
                 if (this.image !== ""){
-                  this.uploadImage("users/", this.getUserId());
+                  this.uploadImage("users", this.getUserId());
                 }
                 this.$router.go(-1);
               }

@@ -113,8 +113,8 @@ Vue.mixin({
         };
         reader.readAsArrayBuffer(uploadedImage);
       },
-      uploadImage : function(destination){
-        return this.$http.put(host + destination + "/" + this.getUserId() + "/photo", this.image, {
+      uploadImage : function(destination, id){
+        return this.$http.put(host + destination + "/" + id + "/photo", this.image, {
           headers: {
             "Content-Type": this.image_type,
             "X-Authorization": this.getAuth()
