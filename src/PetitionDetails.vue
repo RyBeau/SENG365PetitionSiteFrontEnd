@@ -334,7 +334,7 @@
         },
         canBeSigned: function () {
           let userId = Number(this.getUserId());
-          return userId !== null && this.petition.authorId !== userId &&
+          return this.getAuth() !== "" && this.petition.authorId !== userId &&
             !this.isSignedBy(userId) && !this.hasClosed();
         },
         canDeleteSignature: function (){
