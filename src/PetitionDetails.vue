@@ -143,7 +143,7 @@
             <label for="editDescription">Description:</label>
             <textarea id="editDescription" class="form-control scroll" :value="petition.description" rows="10" required></textarea>
             <label for="editClosingDate">Closing Date:</label>
-            <input class="form-control" type="date" id="editClosingDate" :min="this.$moment().format('YYYY-MM-DD')"
+            <input class="form-control" type="date" id="editClosingDate" :min="this.$moment().add(1,'days').format('YYYY-MM-DD')"
                    :value="this.$moment.utc(this.petition.closingDate).local().format('YYYY-MM-DD')" required>
             <label for="updateImage">Picture:</label>
             <input @change="handleImage" class="form-control mb-2" type = "file" id="updateImage" accept="image/jpeg,image/gif,image/png">

@@ -5,6 +5,7 @@ import Login from './Login.vue'
 import Petitions from "./Petitions.vue"
 import Profile from "./Profile.vue";
 import PetitionDetails from "./PetitionDetails.vue";
+import PetitionCreate from "./PetitionCreate.vue";
 import VueRouter from 'vue-router'
 import Vuex from "vuex";
 
@@ -33,6 +34,11 @@ const routes = [
     path: "/petitions/:id",
     name: "PetitionDetails",
     component: PetitionDetails
+  },
+  {
+    path: "/create",
+    name: "PetitionCreate",
+    component: PetitionCreate
   },
   {
     path:"/login",
@@ -70,7 +76,8 @@ const router = new VueRouter({
 Vue.mixin({
   data() {
     return {
-      route_prefix: host
+      route_prefix: host,
+      categories: []
     }
   },
   methods:
@@ -121,7 +128,7 @@ Vue.mixin({
             return -1;
           }
         );
-      },
+      }
     }
 });
 
