@@ -182,14 +182,14 @@
       methods: {
         getPetition: function () {
           const petitionId = this.$route.params.id;
+          if(!Number.isInteger(Number(petitionId))){this.$router.back()}
           this.$http.get(this.route_prefix + "petitions/" + petitionId)
             .then((response) => {
               this.petition = response.data;
               this.authorProfilePic();
               if (this.canBeEdited()) {
                 this.getCategories()
-              }
-              ;
+              };
             }).catch((error) => {
             this.error = "Unable to get Petition with ID " + petitionId;
             this.error_flag = true;
@@ -228,14 +228,16 @@
         },
         getSignatures: function () {
           const petitionId = this.$route.params.id;
-          this.$http.get(this.route_prefix + "petitions/" + petitionId + "/signatures")
-            .then((response) => {
-              this.signatures = response.data;
-              this.getSignatureProfilePics();
-            }).catch((error) => {
-            this.error = "Unable to get petition signatures";
-            this.error_flag = true;
-          });
+          if(Number.isInteger(Number(petitionId))) {
+            this.$http.get(this.route_prefix + "petitions/" + petitionId + "/signatures")
+              .then((response) => {
+                this.signatures = response.data;
+                this.getSignatureProfilePics();
+              }).catch((error) => {
+              this.error = "Unable to get petition signatures";
+              this.error_flag = true;
+            });
+          }
         },
         getSignatureProfilePics: function () {
           for (let i = 0; i < this.signatures.length; i++) {
