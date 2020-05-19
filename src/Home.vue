@@ -15,6 +15,10 @@
             <router-link v-if="this.getAuth()===''" class="nav-link disabled" :to="{name:'Profile'}">Profile</router-link>
             <router-link v-else class="nav-link" :to="{name:'Profile'}">Profile</router-link>
           </li>
+          <li class="nav-item">
+            <router-link v-if="this.getAuth()===''" class="nav-link disabled" :to="{name:'PetitionCreate'}">Create</router-link>
+            <router-link v-else class="nav-link" :to="{name:'PetitionCreate'}">Create</router-link>
+          </li>
         </ul>
     <router-link v-if='this.getAuth()===""' tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
     <button v-else class="btn btn-outline-light ml-md-auto" v-on:click="this.logOut">Log Out</button>
@@ -28,9 +32,12 @@
     </div>
       <div class="container">
         <h1 class="display-4">Welcome to the SENG365 Petitions Site</h1>
-        <p class="lead">Browse our countless petitions for great causes.</p>
+        <p class="lead">Browse our countless petitions for great causes or create your own</p>
         <router-link class="btn btn-dark" :to="{name:'Petitions'}" tag="button">
           Browse
+        </router-link>
+        <router-link v-if="this.getAuth() !== ''" class="btn btn-dark" :to="{name:'PetitionCreate'}" tag="button">
+          Create
         </router-link>
       </div>
       </div>

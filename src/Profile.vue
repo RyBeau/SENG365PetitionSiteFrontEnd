@@ -15,6 +15,10 @@
             <router-link v-if="this.getAuth()===''" class="nav-link disabled" :to="{name:'Profile'}">Profile</router-link>
             <router-link v-else class="nav-link active" :to="{name:'Profile'}">Profile</router-link>
           </li>
+          <li class="nav-item">
+            <router-link v-if="this.getAuth()===''" class="nav-link disabled" :to="{name:'PetitionCreate'}">Create</router-link>
+            <router-link v-else class="nav-link" :to="{name:'PetitionCreate'}">Create</router-link>
+          </li>
         </ul>
     <router-link v-if='this.getAuth()===""' tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
     <button v-else class="btn btn-outline-light ml-md-auto" v-on:click="this.logOut">Log Out</button>
