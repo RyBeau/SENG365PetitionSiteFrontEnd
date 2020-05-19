@@ -69,7 +69,7 @@
       },
       mounted() {
         if(this.getAuth() === ""){
-          this.$router.back()
+          this.$router.push("/");
         }else{
           this.getCategories();
         }

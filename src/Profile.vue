@@ -155,7 +155,7 @@
       },
       mounted(){
           if(this.getAuth() === ""){
-            this.$router.back();
+            this.$router.push("/");
           } else {
             this.getProfileInformation();
             this.getProfilePicture();
