@@ -19,7 +19,7 @@
     <router-link v-if='this.getAuth()===""' tag="button" class="btn btn-outline-light ml-md-auto" :to="{name: 'Login'}"> Log In</router-link>
     <button v-else class="btn btn-outline-light ml-md-auto" v-on:click="this.logOut">Log Out</button>
   </nav>
-  <div class="jumbotron text-center">
+  <div class="jumbotron text-center" v-if="this.getAuth() !== ''">
     <div v-show="error_flag" class="alert alert-danger alert-dismissible fade show" role="alert">
       {{error}}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -154,9 +154,13 @@
         }
       },
       mounted(){
-        this.getProfileInformation();
-        this.getProfilePicture();
-        this.getUserPetitions();
+          if(this.getAuth() === ""){
+            this.$router.back();
+          } else {
+            this.getProfileInformation();
+            this.getProfilePicture();
+            this.getUserPetitions();
+          }
       },
         methods:{
           getProfileInformation: function() {
