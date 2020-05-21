@@ -51,6 +51,8 @@
           <div>
             <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Please check out this petition!"
                :data-url="url" data-show-count="false">Tweet</a>
+              <a target="_blank" :href="'https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fcanterbury.ac.nz%2Fpetitions%2F&'
+              + this.petition.petitionId + '&amp;src=sdkpreparse'" class="align-top">Share on Facebook</a>
             <a class="align-top" :href="'mailto:?subject=Please sign this Petition&amp;body=Please consider signing this petition ' + this.url" target="_blank">
               Email
             </a>
