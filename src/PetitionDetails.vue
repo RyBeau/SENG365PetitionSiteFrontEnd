@@ -48,6 +48,13 @@
             Created: {{getLocalDate(petition.createdDate)}}<br>
             Closing Date: {{getLocalDate(petition.closingDate)}}
           </p>
+          <div>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Please check out this petition!"
+               :data-url="url" data-show-count="false">Tweet</a>
+            <a class="align-top" :href="'mailto:?subject=Please sign this Petition&amp;body=Please consider signing this petition ' + this.url" target="_blank">
+              Email
+            </a>
+          </div>
           <button v-if="canBeSigned()" class="btn btn-dark" type="button" v-on:click="addSignature">Sign this Petition</button>
           <button v-if="canDeleteSignature()" class="btn btn-danger" type="button" v-on:click="deleteSignature">Remove Signature</button>
           <button v-if="canBeEdited()" class="btn btn-dark" type="button" data-toggle="modal" data-target="#editModal">Edit Petition</button>
@@ -176,7 +183,8 @@
             categories: {},
             updateSuccess: "",
             updateError:"",
-            signSuccess: ""
+            signSuccess: "",
+            url: window.location.href
           }
       },
       mounted(){
@@ -369,6 +377,10 @@
             this.error = "Unable to remove signature from petition";
             console.log(error);
           });
+        },
+        sendEmail: function () {
+          console.log(this.url);
+          window.open('mailto:?subject=Please sign this Petition&amp;body=Please consider signing this petition ' + this.url, '_blank');
         }
       }
     }
