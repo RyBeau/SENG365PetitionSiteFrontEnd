@@ -45,8 +45,8 @@
           <p class="card-text">
             Category: {{petition.category}}<br><br>
             {{petition.description}}<br><br>
-            Created: {{getLocalDate(petition.createdDate)}}<br>
-            Closing Date: {{getLocalDate(petition.closingDate)}}
+            Created: {{this.$moment(petition.createdDate).format("dddd, MMMM Do YYYY")}}<br>
+            Closing Date: {{this.$moment(petition.closingDate).format("dddd, MMMM Do YYYY")}}
           </p>
           <div>
             <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="Please check out this petition!"
@@ -157,7 +157,7 @@
             <textarea id="editDescription" class="form-control scroll" :value="petition.description" rows="10" required></textarea>
             <label for="editClosingDate">Closing Date:</label>
             <input class="form-control" type="date" id="editClosingDate" :min="this.$moment().add(1,'days').format('YYYY-MM-DD')"
-                   :value="this.$moment.utc(this.petition.closingDate).local().format('YYYY-MM-DD')" required>
+                   :value="this.$moment(this.petition.closingDate).format('YYYY-MM-DD')">
             <label for="updateImage">Picture:</label>
             <input @change="handleImage" class="form-control mb-2" type = "file" id="updateImage" accept="image/jpeg,image/gif,image/png">
             <div class="modal-footer">
@@ -208,13 +208,6 @@
             this.error = "Unable to get Petition with ID " + petitionId;
             this.error_flag = true;
           });
-        },
-        getLocalDate: function (utcDate) {
-          if (utcDate) {
-            return this.$moment.utc(utcDate).local().format("dddd, MMMM Do YYYY");
-          } else {
-            return "No Closing Date"
-          }
         },
         getPhotoUrl: function () {
           return this.route_prefix + "petitions/" + this.petition.petitionId + "/photo?" + new Date();
@@ -296,14 +289,18 @@
           const title = document.getElementById('editTitle').value;
           const description = document.getElementById('editDescription').value;
           const category = document.getElementById('editCategory').value;
-          const closingDate = this.$moment(document.getElementById('editClosingDate').value).utc().format();
+
           const image = document.getElementById('updateImage').files;
+          let closingDate = undefined;
+          if(document.getElementById('editClosingDate').value !== ""){
+            closingDate = this.$moment(document.getElementById('editClosingDate').value).format("YYYY-MM-DD");
+          }
 
           let data = {};
           if (title !== String(this.petition.title)){data.title = title}
           if (description !== this.petition.description){data.description = description}
           if (category !== String(this.petition.category)){data.categoryId = this.getCategoryId(category)}
-          if (closingDate !== this.$moment(this.petition.closingDate).utc().format()){data.closingDate = closingDate}
+          if (closingDate && closingDate !== this.$moment(this.petition.closingDate).format("YYYY-MM-DD")){data.closingDate = closingDate}
           if(Object.keys(data).length === 0 && image.length === 0){
             this.updateError = "No changes were made"
           } else {

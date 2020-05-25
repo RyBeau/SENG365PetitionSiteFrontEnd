@@ -44,8 +44,7 @@
                 <label for="createDescription">Description:</label>
                 <textarea id="createDescription" class="form-control scroll" rows="10" required></textarea>
                 <label for="createClosingDate">Closing Date:</label>
-                <input class="form-control" type="date" id="createClosingDate" :min="this.$moment().add(2,'days').format('YYYY-MM-DD')"
-                       :value="this.$moment().add(2,'days').format('YYYY-MM-DD')" required>
+                <input class="form-control" type="date" id="createClosingDate" :min="this.$moment().add(1,'days').format('YYYY-MM-DD')">
                 <label for="addImage">Picture:</label>
                 <input @change="handleImage" class="form-control mb-2" type = "file" id="addImage" accept="image/jpeg,image/gif,image/png">
                 <div class="modal-footer d-block">
@@ -116,7 +115,7 @@
             this.error = "Description cannot be empty";
             return false;
           }
-          if(this.$moment().utc().format("YYYY-MM-DD") > data.closingDate){
+          if(this.$moment().format("YYYY-MM-DD") > data.closingDate){
             this.error_flag=true;
             this.error = "Date cannot be in the past";
             return false;
@@ -128,8 +127,12 @@
           data.title = document.getElementById('createTitle').value.trim();
           data.description = document.getElementById('createDescription').value.trim();
           data.categoryId = this.getCategoryId(document.getElementById('createCategory').value);
-          data.closingDate = this.$moment(document.getElementById('createClosingDate').value).utc().format("YYYY-MM-DD");
+
           const image = document.getElementById('addImage').files;
+          console.log(document.getElementById("createClosingDate").value);
+          if (document.getElementById("createClosingDate").value !== ""){
+            data.closingDate = this.$moment(document.getElementById('createClosingDate').value).format("YYYY-MM-DD");
+          }
 
           if(this.checkData(data, image)){
             this.$http.post(this.route_prefix + "petitions", data, {headers: {
