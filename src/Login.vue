@@ -132,27 +132,34 @@
             }
           });
         },
-        checkRegister : function(city, country, image, data){
+        checkRegister : function(name, city, country, image, data){
+          if (/^[a-zA-Z\s]+$/.test(name) && name !== ""){
+            data.name = name;
+          } else {
+            this.registerError = "Invalid Name";
+            return -1;
+          }
+          console.log(data);
           if (/^[a-zA-Z\s]+$/.test(city)){
             data.city = city;
           } else if (city !=="") {
             this.registerError = "Invalid City Name";
-            data = -1;
+            return -1;
           }
           if(/^[a-zA-Z\s]+$/.test(country)){
             data.country = country
           } else if (country !== "") {
             this.registerError = "Invalid Country Name";
-            data = -1;
+            return -1;
           }
           if (image.length !== 0 && !(['image/png','image/jpeg','image/gif'].includes(image[0]['type']))){
             this.registerError = "Invalid Image Format";
-            data = -1;
+            return -1;
           }
           return data
         },
         register: function () {
-          const name = document.getElementById("registerName").value;
+          const name = document.getElementById("registerName").value.trim();
           const email = document.getElementById("registerEmail").value;
           const password = document.getElementById("registerPassword").value;
           const city = document.getElementById("registerCity").value.trim();
@@ -160,11 +167,10 @@
           const image = document.getElementById("registerImage").files;
 
           let data = {
-            "name": name,
             "email": email,
             "password": password
           };
-          data = this.checkRegister(city, country, image, data);
+          data = this.checkRegister(name, city, country, image, data);
           if (data !== -1){
             this.$http.post(this.route_prefix + "users/register", data)
               .then((response) => {
