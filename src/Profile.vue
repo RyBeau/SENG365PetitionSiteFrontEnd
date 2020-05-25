@@ -270,30 +270,30 @@
             if(newCountry !== this.country && newCountry !== ""){data.country = newCountry}
             if(newPass !== "") {data.password = newPass}
             if(currentPass !== "") {data.currentPassword = currentPass}
-            if (Object.keys(data).length !== 0 || image.length !== 0){
-              try{
+            if (Object.keys(data).length !== 0 || image.length !== 0) {
+              try {
                 this.checkFields(data, image);
+                if (Object.keys(data).length !== 0) {
+                  this.sendUpdate(data);
+                }
+                if (image.length !== 0) {
+                  this.uploadImage("users", this.getUserId()).then((success) => {
+                    if (success === 0) {
+                      if (this.updateSuccess === "") {
+                        this.updateSuccess = "Profile Picture Successfully";
+                      }
+                      this.getProfilePicture();
+                    } else {
+                      this.updateError = "Error updating profile picture"
+                    }
+                  });
+                } else {
+                  this.updateError = "No changes made";
+                }
               } catch (error) {
                 this.updateError = error;
                 this.updateSuccess = "";
               }
-              if(Object.keys(data).length !== 0){
-                this.sendUpdate(data);
-              }
-              if (image.length !== 0){
-                this.uploadImage("users", this.getUserId()).then((success) => {
-                  if(success === 0) {
-                    if (this.updateSuccess === ""){
-                      this.updateSuccess = "Profile Picture Successfully";
-                    }
-                    this.getProfilePicture();
-                  } else {
-                    this.updateError = "Error updating profile picture"
-                  }
-                  });
-              }
-            } else {
-              this.updateError="No changes made";
             }
             },
           getUserPetitions: function (){
