@@ -1,18 +1,3 @@
-# petitions-site
+This is the front end of the petitions site I built for my SENG365 assignment.
 
-> This is a petitions website frontend to work with the api developed in the first SENG365 Assignment
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+Viewable at https://rybeau.github.io/PetitionSiteFrontEnd
