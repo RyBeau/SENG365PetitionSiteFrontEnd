@@ -17,7 +17,7 @@ Vue.use(VueAxios, axios);
 import Moment from "vue-moment";
 Vue.use(Moment);
 
-const host = "http://localhost:4941/api/v1/";
+const host = "https://glacial-peak-41556.herokuapp.com/api/v1/";
 
 const routes = [
   {
