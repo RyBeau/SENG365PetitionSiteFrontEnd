@@ -178,6 +178,7 @@
         name: "PetitionDetails",
       data(){
           return {
+            petitionId: this.$route.params.id,
             error: "",
             error_flag: false,
             petition: {},
@@ -195,22 +196,21 @@
       },
       methods: {
         getPetition: function () {
-          const petitionId = this.$route.params.id;
-          if(!Number.isInteger(Number(petitionId))){this.$router.back()}
-          this.$http.get(this.route_prefix + "petitions/" + petitionId)
+          if(!Number.isInteger(Number(this.petitionId))){this.$router.back()}
+          this.$http.get(this.route_prefix + "petitions/" + this.petitionId)
             .then((response) => {
               this.petition = response.data;
               this.authorProfilePic();
               if (this.canBeEdited()) {
                 this.getCategories()
-              };
+              }
             }).catch((error) => {
             this.error = "Unable to get Petition with ID " + petitionId;
             this.error_flag = true;
           });
         },
         getPhotoUrl: function () {
-          return this.route_prefix + "petitions/" + this.petition.petitionId + "/photo?" + new Date();
+          return this.route_prefix + "petitions/" + this.petitionId + "/photo?" + new Date();
         },
         authorProfilePic: function () {
           this.getProfilePicture(this.petition.authorId)
@@ -259,7 +259,7 @@
           return (String(this.petition.authorId) === this.getUserId() && !this.hasClosed());
         },
         deletePetition: function () {
-          this.$http.delete(this.route_prefix + "petitions/" + this.petition.petitionId, {
+          this.$http.delete(this.route_prefix + "petitions/" + this.petitionId, {
             headers: {
               "X-Authorization": this.getAuth()
             }
@@ -305,7 +305,7 @@
             this.updateError = "No changes were made"
           } else {
             if (Object.keys(data).length){
-            this.$http.patch(this.route_prefix + "petitions/" + this.petition.petitionId, data, {headers: {
+            this.$http.patch(this.route_prefix + "petitions/" + this.petitionId, data, {headers: {
                 "X-Authorization": this.getAuth()
               }})
               .then((response) => {
@@ -319,7 +319,7 @@
               if (image.length !== 0 && !(['image/png','image/jpeg','image/gif'].includes(image[0]['type']))){
                 this.updateError = "Invalid Image Format";
               } else {
-                this.uploadImage("petitions", this.petition.petitionId).then((response) => {
+                this.uploadImage("petitions", this.petitionId).then((response) => {
                   this.updateSuccess = "Petition Updated";
                 }).catch((error) => {
                   this.updateError = "Error updating petition photo";
@@ -350,7 +350,7 @@
             this.isSignedBy(userId) && !this.hasClosed();
         },
         addSignature: function (){
-          this.$http.post(this.route_prefix + "petitions/" + this.petition.petitionId + "/signatures", {},{headers: {
+          this.$http.post(this.route_prefix + "petitions/" + this.petitionId + "/signatures", {},{headers: {
             "X-Authorization": this.getAuth()
             }})
           .then((response) => {
@@ -364,7 +364,7 @@
           });
         },
         deleteSignature: function () {
-          this.$http.delete(this.route_prefix + "petitions/" + this.petition.petitionId + "/signatures", {headers: {
+          this.$http.delete(this.route_prefix + "petitions/" + this.petitionId + "/signatures", {headers: {
               "X-Authorization": this.getAuth()
             }})
             .then((response) => {
